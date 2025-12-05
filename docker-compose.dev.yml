@@ -1,0 +1,57 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: ponto_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      target: dev  # Nova etapa no Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ponto_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+      SPRING_DEVTOOLS_LIVERELOAD_ENABLED: "true"
+    volumes:
+      - ./backend/src:/app/src  # Mapeia código fonte
+      - ./backend/pom.xml:/app/pom.xml  # Mapeia pom.xml
+      - maven_cache:/root/.m2  # Cache do Maven para acelerar
+    command: mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+
+  frontend:
+    build:
+      context: ./frontend
+      target: dev  # Nova etapa no Dockerfile
+    ports:
+      - "4200:4200"  # Porta padrão do ng serve
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app  # Mapeia tudo
+      - /app/node_modules  # Evita sobrescrever node_modules do container
+      - npm_cache:/root/.npm  # Cache do npm
+
+volumes:
+  postgres_data:
+  maven_cache:
+  npm_cache:

@@ -4,25 +4,64 @@ spring:
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
+  devtools:
+    restart:
+      enabled: true
+      poll-interval: 2s
+      quiet-period: 1s
+    livereload:
+      enabled: true
+      
+  thymeleaf:
+    cache: false
   
   jpa:
     hibernate:
-      ddl-auto: create-drop  
+      ddl-auto: update 
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
+    defer-datasource-initialization: true
   
+  sql:
+    init:
+      mode: never
+      data-locations: classpath:data.sql
+
   redis:
     host: redis
     port: 6379
+
+# JWT Configuration
+jwt:
+  secret: "eyJhbGciOiJIUzUxMiJ9.ew0KICAic3ViIjogIjEyMzQ1Njc4OTAiLA0KICAibmFtZSI6ICJBbmlzaCBOYXRoIiwNCiAgImlhdCI6IDE1MTYyMzkwMjINCn0.zsV0-VGK01zcyVVqZhkMCcf2DQoxjwLnm0Zk5NKTVD8n8DNu0tMnGTrVbmEtQ3sUv-CPaDCO043Sx_7kiOH-zw"
+  expiration: 86400000  # 24 horas em milissegundos
 
 server:
   port: 8080
   address: 0.0.0.0
 
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
 logging:
   level:
-    com.ponto: DEBUG
-    org.hibernate.SQL: DEBUG
+    com.ponto: TRACE
+    org.springframework.security: TRACE
+    org.springframework.web: DEBUG
+    org.springframework.security.web.FilterChainProxy: DEBUG
+    org.springframework.security.web.access.intercept.FilterSecurityInterceptor: DEBUG
+    org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter: DEBUG
+    com.ponto.security.JwtAuthenticationFilter: TRACE
+    com.ponto.security.JwtTokenProvider: TRACE
+    org.springframework.security.web.csrf.CsrfFilter: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/backend.log

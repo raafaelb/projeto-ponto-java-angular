@@ -1,45 +1,40 @@
-version: '3.8'
-
 services:
-  db:
+  postgres:
     image: postgres:15-alpine
     environment:
       POSTGRES_DB: ponto_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust  # Permite conexões sem senha (apenas para desenvolvimento)
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - ponto-network
-
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    networks:
-      - ponto-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   backend:
-    build: 
-      context: ./backend
-      dockerfile: Dockerfile
+    build: ./backend
     ports:
       - "8080:8080"
     depends_on:
-      - db
-      - redis
+      postgres:
+        condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/ponto_db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ponto_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_REDIS_HOST: redis
-    networks:
-      - ponto-network
-    # Remova o volume de desenvolvimento por enquanto
-    # volumes:
-    #   - ./backend:/app
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    # REMOVA O VOLUME ./backend:/app - Está causando conflito
+    command: >
+      sh -c "
+      echo 'Aguardando PostgreSQL ficar pronto...';
+      sleep 5;
+      echo 'Iniciando Spring Boot...';
+      java -jar /app/app.jar"
 
   frontend:
     build: ./frontend
@@ -47,12 +42,12 @@ services:
       - "80:80"
     depends_on:
       - backend
-    networks:
-      - ponto-network
+
+# REMOVA O REDIS POR ENQUANTO - Não é necessário agora
+# redis:
+#   image: redis:7-alpine
+#   ports:
+#     - "6379:6379"
 
 volumes:
   postgres_data:
-
-networks:
-  ponto-network:
-    driver: bridge

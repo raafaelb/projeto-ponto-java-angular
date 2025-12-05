@@ -1,0 +1,28 @@
+.container {
+  padding: 20px;
+  max-width: 100%;
+  margin: 0 auto;
+  border: 1px solid black
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.checkbox-container {
+  margin: 16px 0;
+}
+
+.button-container {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}

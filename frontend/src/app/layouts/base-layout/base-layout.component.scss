@@ -1,0 +1,72 @@
+.base-layout {
+  height: 100vh;
+}
+
+.sidenav-container {
+  height: 100%;
+}
+
+.sidebar {
+  width: 250px;
+  background: #f8f9fa;
+  
+  .sidebar-header {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #dee2e6;
+    
+    h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #495057;
+    }
+  }
+  
+  .mat-nav-list {
+    padding-top: 0;
+    
+    .active {
+      background-color: rgba(0, 123, 255, 0.1);
+      color: #007bff;
+      
+      .mat-icon {
+        color: #007bff;
+      }
+    }
+  }
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  
+  .spacer {
+    flex: 1 1 auto;
+  }
+  
+  .header-actions {
+    margin-right: 16px;
+    
+    button {
+      margin-left: 8px;
+    }
+  }
+  
+  .user-role {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-left: 4px;
+  }
+}
+
+.page-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}

@@ -1,0 +1,50 @@
+<div class="container">
+  <h2>Cadastrar Empresa</h2>
+  <form [formGroup]="companyForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Nome Fantasia</mat-label>
+      <input matInput formControlName="nomeFantasia" required>
+      <mat-error *ngIf="companyForm.get('nomeFantasia')?.hasError('required')">
+        Nome é obrigatório
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Razão Social</mat-label>
+      <input 
+        matInput 
+        formControlName="razaoSocial"  
+        required
+      >
+      <mat-error *ngIf="companyForm.get('razaoSocial')?.hasError('required')">
+        Razão Social é obrigatória
+      </mat-error>
+    </mat-form-field>
+
+
+    <mat-form-field appearance="outline">
+      <mat-label>CNPJ</mat-label>
+      <input matInput 
+        formControlName="cnpj" 
+        required 
+        placeholder="00.000.000/0000-00"
+        [mask]="'00.000.000/0000-00'"
+        [showMaskTyped]="true"
+        [dropSpecialCharacters]="false"
+      >
+      <mat-error *ngIf="companyForm.get('cnpj')?.hasError('required')">
+        CNPJ é obrigatório
+      </mat-error>
+      <mat-error *ngIf="companyForm.get('cnpj')?.hasError('pattern')">
+        CNPJ inválido
+      </mat-error>
+    </mat-form-field>
+
+    <div class="button-container">
+      <button mat-raised-button color="primary" type="submit" [disabled]="companyForm.invalid">
+        Salvar
+      </button>
+      <button mat-raised-button color="warn" type="button" (click)="onCancel()">Cancelar</button>
+    </div>
+  </form>
+</div>
