@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatInputModule } from '@angular/material/input';
@@ -36,6 +36,7 @@ export class CompanyFormComponent implements OnInit {
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private router: Router,
+    private route: ActivatedRoute,
     private companyService: CompanyService
   ) {
     this.companyForm = this.fb.group({
@@ -47,7 +48,37 @@ export class CompanyFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Initialize component
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.isEditMode = true;
+        this.loadCompany(Number(id));
+      }
+    });
+  }
+
+  private loadCompany(id: number): void {
+    this.loading = true;
+    this.companyService.buscarPorId(id).subscribe({
+      next: (company) => {
+        this.companyForm.patchValue({
+          id: company.id,
+          nomeFantasia: company.nomeFantasia,
+          razaoSocial: company.razaoSocial,
+          cnpj: company.cnpj
+        });
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading company:', error);
+        this.snackBar.open('Erro ao carregar os dados da empresa', 'Fechar', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
+        this.router.navigate(['/admin/companies']);
+        this.loading = false;
+      }
+    });
   }
 
   onSubmit(): void {
@@ -62,18 +93,29 @@ export class CompanyFormComponent implements OnInit {
 
       console.log('Form submitted (cleaned CNPJ):', formValue);
       
-      //Envia a requisição para a API
-      this.companyService.criar(formValue).subscribe({
+      const request = this.isEditMode
+        ? this.companyService.atualizar(formValue.id, formValue)
+        : this.companyService.criar(formValue);
+      
+      request.subscribe({
         next: (response) => {
-          console.log('Company created successfully:', response);
+          console.log(`Company ${this.isEditMode ? 'updated' : 'created'} successfully:`, response);
           this.loading = false;
-          this.snackBar.open('Empresa cadastrada com sucesso!', 'Fechar', { duration: 3000 });
+          this.snackBar.open(
+            `Empresa ${this.isEditMode ? 'atualizada' : 'cadastrada'} com sucesso!`,
+            'Fechar',
+            { duration: 3000 }
+          );
           this.router.navigate(['/admin/companies']);
         },
         error: (error) => {
-          console.error('Error creating company:', error);
+          console.error(`Error ${this.isEditMode ? 'updating' : 'creating'} company:`, error);
           this.loading = false;
-          this.snackBar.open('Erro ao cadastrar empresa', 'Fechar', { duration: 3000 });
+          this.snackBar.open(
+            `Erro ao ${this.isEditMode ? 'atualizar' : 'cadastrar'} empresa`,
+            'Fechar',
+            { duration: 3000 }
+          );
         }
       });
     }

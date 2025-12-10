@@ -29,7 +29,7 @@
     <ng-container matColumnDef="acoes">
       <th mat-header-cell *matHeaderCellDef>Ações</th>
       <td mat-cell *matCellDef="let company">
-        <button mat-icon-button color="primary" [routerLink]="['/companies', company.id]">
+        <button mat-icon-button color="primary" [routerLink]="['/admin/companies', company.id]">
           <mat-icon>edit</mat-icon>
         </button>
         <button mat-icon-button color="warn" (click)="deleteCompany(company.id!)">

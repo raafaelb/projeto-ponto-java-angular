@@ -31,11 +31,11 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () => import('./pages/companies/company-form/company-form.component')
           .then(m => m.CompanyFormComponent)
       },
-      // { 
-      //   path: 'companies/:id/edit', 
-      //   loadComponent: () => import('./pages/companies/company-form/company-form.component')
-      //     .then(m => m.CompanyFormComponent)
-      // },
+      { 
+        path: 'companies/:id', 
+        loadComponent: () => import('./pages/companies/company-form/company-form.component')
+          .then(m => m.CompanyFormComponent)
+      },
       
       // // Usuários (futuro)
       // { 
