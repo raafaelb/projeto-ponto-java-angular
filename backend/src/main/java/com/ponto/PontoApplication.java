@@ -30,6 +30,7 @@ public class PontoApplication {
                 
                 User admin = new User();
                 admin.setUsername("admin");
+                admin.setEmail("admin@admin.com");
                 admin.setPassword(passwordEncoder.encode("admin123"));
                 admin.setRole(UserRole.ADMIN);
                 

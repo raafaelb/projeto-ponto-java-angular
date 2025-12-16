@@ -38,4 +38,12 @@ public class Company {
     @UpdateTimestamp
     @Column(name = "data_atualizacao")
     private LocalDateTime dataAtualizacao;
+
+    public Company(){}
+
+    public Company (String cnpj, String razaoSocial, String nomeFantasia){
+        this.cnpj = cnpj;
+        this.razaoSocial = razaoSocial;
+        this.nomeFantasia = nomeFantasia;
+    }
 }

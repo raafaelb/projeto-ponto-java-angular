@@ -29,9 +29,9 @@ spring:
       mode: never
       data-locations: classpath:data.sql
 
-  redis:
-    host: redis
-    port: 6379
+  # redis:
+  #   host: redis
+  #   port: 6379
 
 # JWT Configuration
 jwt:

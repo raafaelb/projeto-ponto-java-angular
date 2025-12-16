@@ -54,4 +54,15 @@ public class User {
         COMPANY,
         EMPLOYEE
     }
+
+    public User(){}
+
+    public User (String username, String name, String email, String password, Company company, UserRole role){
+        this.username = username;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.company = company;
+        this.role = role;
+    }
 }
