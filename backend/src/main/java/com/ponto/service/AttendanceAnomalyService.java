@@ -48,20 +48,22 @@ public class AttendanceAnomalyService {
                 continue;
             }
             for (LocalDate day = start; !day.isAfter(end); day = day.plusDays(1)) {
-                if (day.getDayOfWeek().getValue() >= 6) {
+                final LocalDate currentDay = day;
+
+                if (currentDay.getDayOfWeek().getValue() >= 6) {
                     continue;
                 }
 
-                if (holidayService.isHoliday(companyId, day)) {
+                if (holidayService.isHoliday(companyId, currentDay)) {
                     continue;
                 }
 
                 boolean approvedAbsence = absenceRequestRepository
-                        .findAllByCompanyIdAndStartDateBetweenOrderByStartDateAsc(companyId, day, day)
+                        .findAllByCompanyIdAndStartDateBetweenOrderByStartDateAsc(companyId, currentDay, currentDay)
                         .stream()
                         .anyMatch(a -> a.getEmployee().getId().equals(employee.getId())
                                 && a.getStatus() == ApprovalStatus.APPROVED
-                                && !day.isBefore(a.getStartDate()) && !day.isAfter(a.getEndDate()));
+                                && !currentDay.isBefore(a.getStartDate()) && !currentDay.isAfter(a.getEndDate()));
 
                 if (approvedAbsence) {
                     continue;
@@ -69,23 +71,23 @@ public class AttendanceAnomalyService {
 
                 List<RegistroPonto> dayRecords = registroPontoRepository.findAllByUserIdAndDataHoraEntradaBetween(
                         employee.getUser().getId(),
-                        day.atStartOfDay(),
-                        day.atTime(LocalTime.MAX)
+                        currentDay.atStartOfDay(),
+                        currentDay.atTime(LocalTime.MAX)
                 );
 
                 if (dayRecords.isEmpty()) {
-                    createAnomalyIfMissing(employee, day, AnomalyType.ABSENCE, "Ausencia sem registro de ponto");
+                    createAnomalyIfMissing(employee, currentDay, AnomalyType.ABSENCE, "Ausencia sem registro de ponto");
                     continue;
                 }
 
                 RegistroPonto first = dayRecords.stream().min(java.util.Comparator.comparing(RegistroPonto::getDataHoraEntrada)).orElse(null);
                 if (first != null && first.getDataHoraEntrada().toLocalTime().isAfter(LocalTime.of(9, 15))) {
-                    createAnomalyIfMissing(employee, day, AnomalyType.LATE, "Entrada apos 09:15");
+                    createAnomalyIfMissing(employee, currentDay, AnomalyType.LATE, "Entrada apos 09:15");
                 }
 
                 boolean anyOpen = dayRecords.stream().anyMatch(r -> r.getDataHoraSaida() == null);
-                if (anyOpen && !day.equals(LocalDate.now())) {
-                    createAnomalyIfMissing(employee, day, AnomalyType.MISSING_CLOCK_OUT, "Registro sem saida");
+                if (anyOpen && !currentDay.equals(LocalDate.now())) {
+                    createAnomalyIfMissing(employee, currentDay, AnomalyType.MISSING_CLOCK_OUT, "Registro sem saida");
                 }
             }
         }
