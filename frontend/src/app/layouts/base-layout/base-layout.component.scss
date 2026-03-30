@@ -37,6 +37,16 @@
   border-radius: 10px;
 }
 
+.sidebar .mat-mdc-list-item,
+.sidebar .mat-icon {
+  color: #ffffff !important;
+}
+
+.sidebar .mdc-list-item__primary-text,
+.sidebar .mat-mdc-list-item-title {
+  color: #ffffff !important;
+}
+
 .topbar {
   background: rgba(255, 255, 255, 0.9);
   border-bottom: 1px solid #dce3f2;
