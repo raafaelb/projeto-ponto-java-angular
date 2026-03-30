@@ -24,6 +24,11 @@ export class CompanyLayoutComponent {
     { label: 'Departamentos', icon: 'domain', route: '/company/departments' },
     { label: 'Times', icon: 'groups', route: '/company/teams' },
     { label: 'Organograma', icon: 'account_tree', route: '/company/org-chart' },
+    { label: 'Ausencias', icon: 'event_busy', route: '/company/absences' },
+    { label: 'Hora Extra', icon: 'schedule', route: '/company/overtime' },
+    { label: 'Feriados', icon: 'event', route: '/company/holidays' },
+    { label: 'Anomalias', icon: 'warning', route: '/company/anomalies' },
+    { label: 'Relatorios', icon: 'bar_chart', route: '/company/reports' },
     { label: 'Usuarios', icon: 'manage_accounts', route: '/company/users' }
   ];
 

@@ -10,6 +10,10 @@ export const EMPLOYEE_ROUTES: Routes = [
       {
         path: 'workday',
         loadComponent: () => import('./pages/workday/workday.component').then((m) => m.WorkdayComponent)
+      },
+      {
+        path: 'requests',
+        loadComponent: () => import('./pages/requests/requests.component').then((m) => m.EmployeeRequestsComponent)
       }
     ]
   }

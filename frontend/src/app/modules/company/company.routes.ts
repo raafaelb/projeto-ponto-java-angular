@@ -28,6 +28,26 @@ export const COMPANY_ROUTES: Routes = [
         loadComponent: () => import('../admin/pages/org-chart/org-chart.component').then((m) => m.OrgChartComponent)
       },
       {
+        path: 'absences',
+        loadComponent: () => import('./pages/absences/absences.component').then((m) => m.CompanyAbsencesComponent)
+      },
+      {
+        path: 'overtime',
+        loadComponent: () => import('./pages/overtime/overtime.component').then((m) => m.CompanyOvertimeComponent)
+      },
+      {
+        path: 'holidays',
+        loadComponent: () => import('./pages/holidays/holidays.component').then((m) => m.CompanyHolidaysComponent)
+      },
+      {
+        path: 'anomalies',
+        loadComponent: () => import('./pages/anomalies/anomalies.component').then((m) => m.CompanyAnomaliesComponent)
+      },
+      {
+        path: 'reports',
+        loadComponent: () => import('./pages/reports/reports.component').then((m) => m.CompanyReportsComponent)
+      },
+      {
         path: 'users',
         loadComponent: () => import('../admin/pages/users/user-list/user-list.component').then((m) => m.UserListComponent)
       }

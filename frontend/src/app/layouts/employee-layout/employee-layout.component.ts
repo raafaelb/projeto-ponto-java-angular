@@ -18,7 +18,10 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class EmployeeLayoutComponent {
   userInfo: UserInfo;
-  menuItems: MenuItem[] = [{ label: 'Jornada', icon: 'schedule', route: '/employee/workday' }];
+  menuItems: MenuItem[] = [
+    { label: 'Jornada', icon: 'schedule', route: '/employee/workday' },
+    { label: 'Solicitacoes', icon: 'request_page', route: '/employee/requests' }
+  ];
 
   constructor(private authService: AuthService) {
     const user = this.authService.getUser();

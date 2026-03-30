@@ -1,0 +1,51 @@
+<section class="grid">
+  <mat-card class="card">
+    <h2>Solicitar Ausencia</h2>
+    <form [formGroup]="absenceForm" (ngSubmit)="submitAbsence()" class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Tipo</mat-label>
+        <mat-select formControlName="type">
+          <mat-option value="VACATION">Ferias</mat-option>
+          <mat-option value="SICK_LEAVE">Atestado</mat-option>
+          <mat-option value="PERSONAL">Pessoal</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Inicio</mat-label><input matInput type="date" formControlName="startDate" /></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Fim</mat-label><input matInput type="date" formControlName="endDate" /></mat-form-field>
+      <mat-form-field appearance="outline" class="wide"><mat-label>Motivo</mat-label><input matInput formControlName="reason" /></mat-form-field>
+      <button mat-raised-button color="primary" type="submit" class="wide">Enviar solicitacao</button>
+    </form>
+  </mat-card>
+
+  <mat-card class="card">
+    <h2>Solicitar Hora Extra</h2>
+    <form [formGroup]="overtimeForm" (ngSubmit)="submitOvertime()" class="form-grid">
+      <mat-form-field appearance="outline"><mat-label>Data</mat-label><input matInput type="date" formControlName="workDate" /></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Minutos</mat-label><input matInput type="number" formControlName="requestedMinutes" /></mat-form-field>
+      <mat-form-field appearance="outline" class="wide"><mat-label>Motivo</mat-label><input matInput formControlName="reason" /></mat-form-field>
+      <button mat-raised-button color="primary" type="submit" class="wide">Enviar solicitacao</button>
+    </form>
+  </mat-card>
+
+  <mat-card class="card wide-card">
+    <h2>Minhas Ausencias</h2>
+    <table mat-table [dataSource]="absences">
+      <ng-container matColumnDef="type"><th mat-header-cell *matHeaderCellDef>Tipo</th><td mat-cell *matCellDef="let a">{{ a.type }}</td></ng-container>
+      <ng-container matColumnDef="period"><th mat-header-cell *matHeaderCellDef>Periodo</th><td mat-cell *matCellDef="let a">{{ a.startDate | date:'dd/MM/yyyy' }} - {{ a.endDate | date:'dd/MM/yyyy' }}</td></ng-container>
+      <ng-container matColumnDef="status"><th mat-header-cell *matHeaderCellDef>Status</th><td mat-cell *matCellDef="let a">{{ a.status }}</td></ng-container>
+      <tr mat-header-row *matHeaderRowDef="absenceColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: absenceColumns"></tr>
+    </table>
+  </mat-card>
+
+  <mat-card class="card wide-card">
+    <h2>Minhas Horas Extras</h2>
+    <table mat-table [dataSource]="overtimes">
+      <ng-container matColumnDef="date"><th mat-header-cell *matHeaderCellDef>Data</th><td mat-cell *matCellDef="let o">{{ o.workDate | date:'dd/MM/yyyy' }}</td></ng-container>
+      <ng-container matColumnDef="minutes"><th mat-header-cell *matHeaderCellDef>Minutos</th><td mat-cell *matCellDef="let o">{{ o.requestedMinutes }}</td></ng-container>
+      <ng-container matColumnDef="status"><th mat-header-cell *matHeaderCellDef>Status</th><td mat-cell *matCellDef="let o">{{ o.status }}</td></ng-container>
+      <tr mat-header-row *matHeaderRowDef="overtimeColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: overtimeColumns"></tr>
+    </table>
+  </mat-card>
+</section>

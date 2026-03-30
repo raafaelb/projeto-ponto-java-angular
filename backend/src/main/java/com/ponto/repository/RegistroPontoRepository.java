@@ -16,4 +16,16 @@ public interface RegistroPontoRepository extends JpaRepository<RegistroPonto, Lo
             LocalDateTime start,
             LocalDateTime end
     );
+
+    List<RegistroPonto> findAllByUserCompanyIdAndDataHoraEntradaBetween(
+            Long companyId,
+            LocalDateTime start,
+            LocalDateTime end
+    );
+
+    List<RegistroPonto> findAllByUserIdAndDataHoraEntradaBetween(
+            Long userId,
+            LocalDateTime start,
+            LocalDateTime end
+    );
 }

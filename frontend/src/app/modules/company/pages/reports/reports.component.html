@@ -1,0 +1,32 @@
+<mat-card class="panel">
+  <div class="head">
+    <h2>Relatorios de Ponto e Ausencias</h2>
+    <div class="filters">
+      <input type="date" [formControl]="form.controls.startDate" />
+      <input type="date" [formControl]="form.controls.endDate" />
+      <button mat-stroked-button color="primary" (click)="load()">Filtrar</button>
+      <button mat-stroked-button color="primary" (click)="exportCsv()">CSV</button>
+      <button mat-stroked-button color="primary" (click)="exportPdf()">PDF</button>
+    </div>
+  </div>
+
+  <p class="totals">
+    Total trabalhado: {{ formatMinutes(report.totalWorkedMinutes) }} |
+    Horas extras aprovadas: {{ formatMinutes(report.totalApprovedOvertimeMinutes) }} |
+    Dias de ausencia: {{ report.totalAbsenceDays }} |
+    Anomalias: {{ report.totalAnomalies }}
+  </p>
+
+  <table mat-table [dataSource]="report.rows">
+    <ng-container matColumnDef="employee"><th mat-header-cell *matHeaderCellDef>Funcionario</th><td mat-cell *matCellDef="let r">{{ r.employeeName }}</td></ng-container>
+    <ng-container matColumnDef="department"><th mat-header-cell *matHeaderCellDef>Departamento</th><td mat-cell *matCellDef="let r">{{ r.department }}</td></ng-container>
+    <ng-container matColumnDef="team"><th mat-header-cell *matHeaderCellDef>Time</th><td mat-cell *matCellDef="let r">{{ r.team }}</td></ng-container>
+    <ng-container matColumnDef="worked"><th mat-header-cell *matHeaderCellDef>Trabalhado</th><td mat-cell *matCellDef="let r">{{ formatMinutes(r.workedMinutes) }}</td></ng-container>
+    <ng-container matColumnDef="overtime"><th mat-header-cell *matHeaderCellDef>Hora extra</th><td mat-cell *matCellDef="let r">{{ formatMinutes(r.approvedOvertimeMinutes) }}</td></ng-container>
+    <ng-container matColumnDef="absences"><th mat-header-cell *matHeaderCellDef>Ausencias</th><td mat-cell *matCellDef="let r">{{ r.absenceDays }}</td></ng-container>
+    <ng-container matColumnDef="anomalies"><th mat-header-cell *matHeaderCellDef>Anomalias</th><td mat-cell *matCellDef="let r">{{ r.anomalyCount }}</td></ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</mat-card>
