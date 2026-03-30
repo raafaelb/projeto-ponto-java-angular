@@ -5,11 +5,13 @@ import com.ponto.entity.User;
 import com.ponto.repository.CompanyRepository;
 import com.ponto.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
@@ -27,7 +29,9 @@ public class DataInitializer implements CommandLineRunner {
             return companyRepository.save(nova);
         });
 
-        if (userRepository.findByUsername("admin").isEmpty()) {
+        boolean adminExists = userRepository.findByUsername("admin").isPresent()
+                || userRepository.findByEmail("admin@sistema.com").isPresent();
+        if (!adminExists) {
             User admin = new User();
             admin.setName("Administrador");
             admin.setEmail("admin@sistema.com");
@@ -36,9 +40,13 @@ public class DataInitializer implements CommandLineRunner {
             admin.setRole(User.UserRole.ADMIN);
             admin.setActive(true);
             userRepository.save(admin);
+        } else {
+            log.debug("DataInitializer: usuario admin ja existe (username/email), criacao ignorada");
         }
 
-        if (userRepository.findByUsername("empresa").isEmpty()) {
+        boolean companyUserExists = userRepository.findByUsername("empresa").isPresent()
+                || userRepository.findByEmail("empresa@sistema.com").isPresent();
+        if (!companyUserExists) {
             User companyUser = new User();
             companyUser.setName("Usuario Empresa Demo");
             companyUser.setEmail("empresa@sistema.com");
@@ -48,6 +56,8 @@ public class DataInitializer implements CommandLineRunner {
             companyUser.setCompany(company);
             companyUser.setActive(true);
             userRepository.save(companyUser);
+        } else {
+            log.debug("DataInitializer: usuario empresa ja existe (username/email), criacao ignorada");
         }
     }
 }

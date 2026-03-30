@@ -26,7 +26,7 @@ public class Employee {
     @Column(nullable = false, length = 160)
     private String email;
 
-    @Column(name = "employee_code", nullable = false, length = 40)
+    @Column(name = "employee_code", length = 40)
     private String employeeCode;
 
     @Column(nullable = false, length = 120)

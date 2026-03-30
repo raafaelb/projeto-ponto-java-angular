@@ -87,13 +87,21 @@ export class FuncionarioListComponent implements OnInit {
   loadBaseData(): void {
     this.departmentService.list().subscribe((departments) => (this.departments = departments));
     this.teamService.list().subscribe((teams) => (this.teams = teams));
-    this.careerService.listCareerLevels().subscribe((levels) => (this.careerLevels = levels));
+    this.careerService.listCareerLevels().subscribe({
+      next: (levels) => (this.careerLevels = levels),
+      error: () => (this.careerLevels = [])
+    });
   }
 
   load(): void {
     this.employeeService.list().subscribe({
       next: (employees) => {
         this.employees = employees;
+      },
+      error: (error) => {
+        this.employees = [];
+        this.errorMessage = error?.error?.message || 'Nao foi possivel carregar os funcionarios.';
+        this.snackBar.open(this.errorMessage, 'OK', { duration: 3200 });
       }
     });
   }
