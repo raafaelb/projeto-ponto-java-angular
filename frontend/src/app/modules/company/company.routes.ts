@@ -60,6 +60,18 @@ export const COMPANY_ROUTES: Routes = [
         loadComponent: () => import('./pages/career/career.component').then((m) => m.CompanyCareerComponent)
       },
       {
+        path: 'payroll',
+        loadComponent: () => import('./pages/payroll/payroll.component').then((m) => m.CompanyPayrollComponent)
+      },
+      {
+        path: 'benefits',
+        loadComponent: () => import('./pages/benefits/benefits.component').then((m) => m.CompanyBenefitsComponent)
+      },
+      {
+        path: 'compliance',
+        loadComponent: () => import('./pages/compliance/compliance.component').then((m) => m.CompanyComplianceComponent)
+      },
+      {
         path: 'users',
         loadComponent: () => import('../admin/pages/users/user-list/user-list.component').then((m) => m.UserListComponent)
       }

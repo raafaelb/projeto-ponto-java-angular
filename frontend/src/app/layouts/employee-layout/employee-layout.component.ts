@@ -23,7 +23,10 @@ export class EmployeeLayoutComponent {
     { label: 'Solicitacoes', icon: 'request_page', route: '/employee/requests' },
     { label: 'Performance', icon: 'insights', route: '/employee/performance' },
     { label: 'Compensacao', icon: 'payments', route: '/employee/compensation' },
-    { label: 'Carreira', icon: 'school', route: '/employee/career' }
+    { label: 'Carreira', icon: 'school', route: '/employee/career' },
+    { label: 'Holerites', icon: 'receipt', route: '/employee/payroll' },
+    { label: 'Beneficios', icon: 'favorite', route: '/employee/benefits' },
+    { label: 'Compliance', icon: 'verified_user', route: '/employee/compliance' }
   ];
 
   constructor(private authService: AuthService) {

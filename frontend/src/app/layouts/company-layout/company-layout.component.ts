@@ -32,6 +32,9 @@ export class CompanyLayoutComponent {
     { label: 'Performance', icon: 'track_changes', route: '/company/performance' },
     { label: 'Compensacao', icon: 'payments', route: '/company/compensation' },
     { label: 'Carreira', icon: 'trending_up', route: '/company/career' },
+    { label: 'Folha', icon: 'receipt_long', route: '/company/payroll' },
+    { label: 'Beneficios', icon: 'health_and_safety', route: '/company/benefits' },
+    { label: 'Compliance', icon: 'gavel', route: '/company/compliance' },
     { label: 'Usuarios', icon: 'manage_accounts', route: '/company/users' }
   ];
 

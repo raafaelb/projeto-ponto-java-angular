@@ -1,0 +1,14 @@
+<mat-card class="panel">
+  <h2>Meus Holerites</h2>
+  <table mat-table [dataSource]="payslips">
+    <ng-container matColumnDef="createdAt"><th mat-header-cell *matHeaderCellDef>Data</th><td mat-cell *matCellDef="let p">{{ p.createdAt }}</td></ng-container>
+    <ng-container matColumnDef="gross"><th mat-header-cell *matHeaderCellDef>Bruto</th><td mat-cell *matCellDef="let p">{{ p.grossPay }}</td></ng-container>
+    <ng-container matColumnDef="deductions"><th mat-header-cell *matHeaderCellDef>Descontos</th><td mat-cell *matCellDef="let p">{{ p.deductions }}</td></ng-container>
+    <ng-container matColumnDef="tax"><th mat-header-cell *matHeaderCellDef>Impostos</th><td mat-cell *matCellDef="let p">{{ p.taxWithheld }}</td></ng-container>
+    <ng-container matColumnDef="overtime"><th mat-header-cell *matHeaderCellDef>Hora extra</th><td mat-cell *matCellDef="let p">{{ p.overtimePay }}</td></ng-container>
+    <ng-container matColumnDef="bonus"><th mat-header-cell *matHeaderCellDef>Bonus</th><td mat-cell *matCellDef="let p">{{ p.bonusPay }}</td></ng-container>
+    <ng-container matColumnDef="net"><th mat-header-cell *matHeaderCellDef>Liquido</th><td mat-cell *matCellDef="let p">{{ p.netPay }}</td></ng-container>
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns"></tr>
+  </table>
+</mat-card>

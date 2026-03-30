@@ -1,0 +1,67 @@
+<mat-card class="panel">
+  <h2>Folha de Pagamento</h2>
+  <div class="grid">
+    <div class="block">
+      <h3>Novo ciclo</h3>
+      <label>Inicio</label>
+      <input type="date" [formControl]="cycleForm.controls.periodStart" />
+      <label>Fim</label>
+      <input type="date" [formControl]="cycleForm.controls.periodEnd" />
+      <label>Pagamento</label>
+      <input type="date" [formControl]="cycleForm.controls.paymentDate" />
+      <mat-form-field appearance="outline">
+        <mat-label>Observacoes</mat-label>
+        <input matInput [formControl]="cycleForm.controls.notes" />
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="createCycle()">Criar ciclo</button>
+    </div>
+    <div class="block">
+      <h3>Gerar holerite</h3>
+      <mat-form-field appearance="outline">
+        <mat-label>Ciclo</mat-label>
+        <mat-select [formControl]="payslipForm.controls.payrollCycleId">
+          <mat-option *ngFor="let c of cycles" [value]="c.id">{{ c.periodStart }} - {{ c.periodEnd }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Funcionario</mat-label>
+        <mat-select [formControl]="payslipForm.controls.employeeId">
+          <mat-option *ngFor="let e of employees" [value]="e.id">{{ e.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Bruto</mat-label><input matInput type="number" [formControl]="payslipForm.controls.grossPay" /></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Descontos</mat-label><input matInput type="number" [formControl]="payslipForm.controls.deductions" /></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Impostos</mat-label><input matInput type="number" [formControl]="payslipForm.controls.taxWithheld" /></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Hora extra</mat-label><input matInput type="number" [formControl]="payslipForm.controls.overtimePay" /></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Bonus</mat-label><input matInput type="number" [formControl]="payslipForm.controls.bonusPay" /></mat-form-field>
+      <button mat-raised-button color="primary" (click)="createPayslip()">Gerar holerite</button>
+    </div>
+  </div>
+</mat-card>
+
+<mat-card class="panel">
+  <h3>Ciclos</h3>
+  <table mat-table [dataSource]="cycles">
+    <ng-container matColumnDef="period"><th mat-header-cell *matHeaderCellDef>Periodo</th><td mat-cell *matCellDef="let c">{{ c.periodStart }} ate {{ c.periodEnd }}</td></ng-container>
+    <ng-container matColumnDef="paymentDate"><th mat-header-cell *matHeaderCellDef>Pagamento</th><td mat-cell *matCellDef="let c">{{ c.paymentDate || '-' }}</td></ng-container>
+    <ng-container matColumnDef="status"><th mat-header-cell *matHeaderCellDef>Status</th><td mat-cell *matCellDef="let c">{{ c.status }}</td></ng-container>
+    <ng-container matColumnDef="actions"><th mat-header-cell *matHeaderCellDef>Acoes</th><td mat-cell *matCellDef="let c"><button mat-stroked-button color="primary" (click)="closeCycle(c)" [disabled]="c.status === 'CLOSED'">Fechar</button></td></ng-container>
+    <tr mat-header-row *matHeaderRowDef="cycleColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: cycleColumns"></tr>
+  </table>
+</mat-card>
+
+<mat-card class="panel">
+  <h3>Holerites</h3>
+  <table mat-table [dataSource]="payslips">
+    <ng-container matColumnDef="employee"><th mat-header-cell *matHeaderCellDef>Funcionario</th><td mat-cell *matCellDef="let p">{{ p.employeeName }}</td></ng-container>
+    <ng-container matColumnDef="gross"><th mat-header-cell *matHeaderCellDef>Bruto</th><td mat-cell *matCellDef="let p">{{ p.grossPay }}</td></ng-container>
+    <ng-container matColumnDef="deductions"><th mat-header-cell *matHeaderCellDef>Descontos</th><td mat-cell *matCellDef="let p">{{ p.deductions }}</td></ng-container>
+    <ng-container matColumnDef="tax"><th mat-header-cell *matHeaderCellDef>Impostos</th><td mat-cell *matCellDef="let p">{{ p.taxWithheld }}</td></ng-container>
+    <ng-container matColumnDef="overtime"><th mat-header-cell *matHeaderCellDef>Hora extra</th><td mat-cell *matCellDef="let p">{{ p.overtimePay }}</td></ng-container>
+    <ng-container matColumnDef="bonus"><th mat-header-cell *matHeaderCellDef>Bonus</th><td mat-cell *matCellDef="let p">{{ p.bonusPay }}</td></ng-container>
+    <ng-container matColumnDef="net"><th mat-header-cell *matHeaderCellDef>Liquido</th><td mat-cell *matCellDef="let p">{{ p.netPay }}</td></ng-container>
+    <tr mat-header-row *matHeaderRowDef="payslipColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: payslipColumns"></tr>
+  </table>
+</mat-card>

@@ -26,6 +26,18 @@ export const EMPLOYEE_ROUTES: Routes = [
       {
         path: 'career',
         loadComponent: () => import('./pages/career/career.component').then((m) => m.EmployeeCareerComponent)
+      },
+      {
+        path: 'payroll',
+        loadComponent: () => import('./pages/payroll/payroll.component').then((m) => m.EmployeePayrollComponent)
+      },
+      {
+        path: 'benefits',
+        loadComponent: () => import('./pages/benefits/benefits.component').then((m) => m.EmployeeBenefitsComponent)
+      },
+      {
+        path: 'compliance',
+        loadComponent: () => import('./pages/compliance/compliance.component').then((m) => m.EmployeeComplianceComponent)
       }
     ]
   }

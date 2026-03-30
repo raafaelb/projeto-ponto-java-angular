@@ -1,0 +1,47 @@
+<mat-card class="panel">
+  <h2>Compliance</h2>
+  <div class="form-grid">
+    <mat-form-field appearance="outline"><mat-label>Titulo</mat-label><input matInput [formControl]="policyForm.controls.title" /></mat-form-field>
+    <mat-form-field appearance="outline"><mat-label>Versao</mat-label><input matInput [formControl]="policyForm.controls.version" /></mat-form-field>
+    <div><label>Vigencia</label><input type="date" [formControl]="policyForm.controls.effectiveDate" /></div>
+    <mat-form-field appearance="outline"><mat-label>Resumo</mat-label><input matInput [formControl]="policyForm.controls.contentSummary" /></mat-form-field>
+    <mat-slide-toggle [formControl]="policyForm.controls.active">Ativa</mat-slide-toggle>
+    <button mat-raised-button color="primary" (click)="createPolicy()">Criar politica</button>
+  </div>
+</mat-card>
+
+<mat-card class="panel">
+  <h3>Politicas</h3>
+  <table mat-table [dataSource]="policies">
+    <ng-container matColumnDef="title"><th mat-header-cell *matHeaderCellDef>Titulo</th><td mat-cell *matCellDef="let p">{{ p.title }}</td></ng-container>
+    <ng-container matColumnDef="version"><th mat-header-cell *matHeaderCellDef>Versao</th><td mat-cell *matCellDef="let p">{{ p.version }}</td></ng-container>
+    <ng-container matColumnDef="effectiveDate"><th mat-header-cell *matHeaderCellDef>Vigencia</th><td mat-cell *matCellDef="let p">{{ p.effectiveDate }}</td></ng-container>
+    <ng-container matColumnDef="active"><th mat-header-cell *matHeaderCellDef>Status</th><td mat-cell *matCellDef="let p">{{ p.active ? 'Ativa' : 'Inativa' }}</td></ng-container>
+    <tr mat-header-row *matHeaderRowDef="policyColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: policyColumns"></tr>
+  </table>
+</mat-card>
+
+<mat-card class="panel">
+  <h3>Reconhecimentos</h3>
+  <table mat-table [dataSource]="acknowledgments">
+    <ng-container matColumnDef="policy"><th mat-header-cell *matHeaderCellDef>Politica</th><td mat-cell *matCellDef="let a">{{ a.policyTitle }} v{{ a.policyVersion }}</td></ng-container>
+    <ng-container matColumnDef="status"><th mat-header-cell *matHeaderCellDef>Status</th><td mat-cell *matCellDef="let a">{{ a.status }}</td></ng-container>
+    <ng-container matColumnDef="acknowledgedAt"><th mat-header-cell *matHeaderCellDef>Reconhecido em</th><td mat-cell *matCellDef="let a">{{ a.acknowledgedAt || '-' }}</td></ng-container>
+    <tr mat-header-row *matHeaderRowDef="ackColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: ackColumns"></tr>
+  </table>
+</mat-card>
+
+<mat-card class="panel">
+  <h3>Trilha de auditoria</h3>
+  <table mat-table [dataSource]="events">
+    <ng-container matColumnDef="eventType"><th mat-header-cell *matHeaderCellDef>Evento</th><td mat-cell *matCellDef="let e">{{ e.eventType }}</td></ng-container>
+    <ng-container matColumnDef="severity"><th mat-header-cell *matHeaderCellDef>Severidade</th><td mat-cell *matCellDef="let e">{{ e.severity }}</td></ng-container>
+    <ng-container matColumnDef="message"><th mat-header-cell *matHeaderCellDef>Mensagem</th><td mat-cell *matCellDef="let e">{{ e.message }}</td></ng-container>
+    <ng-container matColumnDef="createdBy"><th mat-header-cell *matHeaderCellDef>Usuario</th><td mat-cell *matCellDef="let e">{{ e.createdBy || '-' }}</td></ng-container>
+    <ng-container matColumnDef="createdAt"><th mat-header-cell *matHeaderCellDef>Data</th><td mat-cell *matCellDef="let e">{{ e.createdAt }}</td></ng-container>
+    <tr mat-header-row *matHeaderRowDef="eventColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: eventColumns"></tr>
+  </table>
+</mat-card>
