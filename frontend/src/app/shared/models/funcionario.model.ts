@@ -19,6 +19,9 @@ export interface Employee {
   teamName?: string | null;
   managerEmployeeId?: number | null;
   managerName?: string | null;
+  careerLevelId?: number | null;
+  careerLevelName?: string | null;
+  currentSalary?: number | null;
   username: string;
   password?: string;
   active?: boolean;

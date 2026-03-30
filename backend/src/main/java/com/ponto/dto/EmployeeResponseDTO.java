@@ -2,6 +2,7 @@ package com.ponto.dto;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -32,6 +33,9 @@ public class EmployeeResponseDTO {
     private String teamName;
     private Long managerEmployeeId;
     private String managerName;
+    private Long careerLevelId;
+    private String careerLevelName;
+    private BigDecimal currentSalary;
 
     private Long userId;
     private String username;

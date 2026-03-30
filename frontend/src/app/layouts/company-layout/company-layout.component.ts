@@ -29,6 +29,9 @@ export class CompanyLayoutComponent {
     { label: 'Feriados', icon: 'event', route: '/company/holidays' },
     { label: 'Anomalias', icon: 'warning', route: '/company/anomalies' },
     { label: 'Relatorios', icon: 'bar_chart', route: '/company/reports' },
+    { label: 'Performance', icon: 'track_changes', route: '/company/performance' },
+    { label: 'Compensacao', icon: 'payments', route: '/company/compensation' },
+    { label: 'Carreira', icon: 'trending_up', route: '/company/career' },
     { label: 'Usuarios', icon: 'manage_accounts', route: '/company/users' }
   ];
 

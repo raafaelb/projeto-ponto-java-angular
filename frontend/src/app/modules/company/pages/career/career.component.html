@@ -1,0 +1,93 @@
+<mat-card class="panel">
+  <h2>Carreira e Desenvolvimento</h2>
+
+  <div class="grid">
+    <div class="block">
+      <h3>Novo Nivel de Carreira</h3>
+      <mat-form-field appearance="outline"><mat-label>Nome</mat-label><input matInput [formControl]="levelForm.controls.name" /></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Ordem</mat-label><input matInput type="number" [formControl]="levelForm.controls.rankOrder" /></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Descricao</mat-label><input matInput [formControl]="levelForm.controls.description" /></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Salario minimo</mat-label><input matInput type="number" [formControl]="levelForm.controls.minSalary" /></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Salario maximo</mat-label><input matInput type="number" [formControl]="levelForm.controls.maxSalary" /></mat-form-field>
+      <button mat-raised-button color="primary" (click)="createLevel()">Salvar nivel</button>
+    </div>
+
+    <div class="block">
+      <h3>Registrar Skill Assessment</h3>
+      <mat-form-field appearance="outline">
+        <mat-label>Funcionario</mat-label>
+        <mat-select [formControl]="skillForm.controls.employeeId">
+          <mat-option *ngFor="let e of employees" [value]="e.id">{{ e.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Skill</mat-label><input matInput [formControl]="skillForm.controls.skillName" /></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Nivel atual</mat-label><input matInput type="number" [formControl]="skillForm.controls.currentLevel" /></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Nivel alvo</mat-label><input matInput type="number" [formControl]="skillForm.controls.targetLevel" /></mat-form-field>
+      <label>Ultima avaliacao</label>
+      <input type="date" [formControl]="skillForm.controls.lastAssessedDate" />
+      <mat-form-field appearance="outline"><mat-label>Notas</mat-label><input matInput [formControl]="skillForm.controls.notes" /></mat-form-field>
+      <button mat-raised-button color="primary" (click)="createSkill()">Registrar skill</button>
+    </div>
+  </div>
+
+  <div class="assign">
+    <h3>Atribuir nivel ao funcionario</h3>
+    <mat-form-field appearance="outline">
+      <mat-label>Funcionario</mat-label>
+      <mat-select [formControl]="assignForm.controls.employeeId">
+        <mat-option *ngFor="let e of employees" [value]="e.id">{{ e.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Nivel</mat-label>
+      <mat-select [formControl]="assignForm.controls.levelId">
+        <mat-option *ngFor="let l of levels" [value]="l.id">{{ l.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="assignLevel()">Atribuir</button>
+  </div>
+</mat-card>
+
+<mat-card class="panel">
+  <h3>Niveis de carreira</h3>
+  <table mat-table [dataSource]="levels">
+    <ng-container matColumnDef="name"><th mat-header-cell *matHeaderCellDef>Nivel</th><td mat-cell *matCellDef="let l">{{ l.name }}</td></ng-container>
+    <ng-container matColumnDef="rank"><th mat-header-cell *matHeaderCellDef>Ordem</th><td mat-cell *matCellDef="let l">{{ l.rankOrder }}</td></ng-container>
+    <ng-container matColumnDef="salaryBand"><th mat-header-cell *matHeaderCellDef>Faixa salarial</th><td mat-cell *matCellDef="let l">{{ l.minSalary || 0 }} - {{ l.maxSalary || 0 }}</td></ng-container>
+    <ng-container matColumnDef="actions"><th mat-header-cell *matHeaderCellDef>Acoes</th><td mat-cell *matCellDef="let l"><button mat-stroked-button color="warn" (click)="deleteLevel(l)">Remover</button></td></ng-container>
+    <tr mat-header-row *matHeaderRowDef="levelColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: levelColumns"></tr>
+  </table>
+</mat-card>
+
+<mat-card class="panel">
+  <h3>Skills avaliadas</h3>
+  <table mat-table [dataSource]="skills">
+    <ng-container matColumnDef="employee"><th mat-header-cell *matHeaderCellDef>Funcionario</th><td mat-cell *matCellDef="let s">{{ s.employeeName }}</td></ng-container>
+    <ng-container matColumnDef="skill"><th mat-header-cell *matHeaderCellDef>Skill</th><td mat-cell *matCellDef="let s">{{ s.skillName }}</td></ng-container>
+    <ng-container matColumnDef="current"><th mat-header-cell *matHeaderCellDef>Atual</th><td mat-cell *matCellDef="let s">{{ s.currentLevel }}</td></ng-container>
+    <ng-container matColumnDef="target"><th mat-header-cell *matHeaderCellDef>Alvo</th><td mat-cell *matCellDef="let s">{{ s.targetLevel || '-' }}</td></ng-container>
+    <ng-container matColumnDef="lastDate"><th mat-header-cell *matHeaderCellDef>Ultima data</th><td mat-cell *matCellDef="let s">{{ s.lastAssessedDate || '-' }}</td></ng-container>
+    <tr mat-header-row *matHeaderRowDef="skillColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: skillColumns"></tr>
+  </table>
+</mat-card>
+
+<mat-card class="panel">
+  <h3>Solicitacoes de promocao</h3>
+  <table mat-table [dataSource]="promotions">
+    <ng-container matColumnDef="employee"><th mat-header-cell *matHeaderCellDef>Funcionario</th><td mat-cell *matCellDef="let p">{{ p.employeeName }}</td></ng-container>
+    <ng-container matColumnDef="fromTo"><th mat-header-cell *matHeaderCellDef>Nivel</th><td mat-cell *matCellDef="let p">{{ p.fromLevelName || '-' }} -> {{ p.toLevelName }}</td></ng-container>
+    <ng-container matColumnDef="effectiveDate"><th mat-header-cell *matHeaderCellDef>Data efetiva</th><td mat-cell *matCellDef="let p">{{ p.effectiveDate || '-' }}</td></ng-container>
+    <ng-container matColumnDef="status"><th mat-header-cell *matHeaderCellDef>Status</th><td mat-cell *matCellDef="let p">{{ p.status }}</td></ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Acoes</th>
+      <td mat-cell *matCellDef="let p">
+        <button mat-stroked-button color="primary" [disabled]="p.status !== 'PENDING'" (click)="approvePromotion(p)">Aprovar</button>
+        <button mat-stroked-button color="warn" [disabled]="p.status !== 'PENDING'" (click)="rejectPromotion(p)">Rejeitar</button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="promotionColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: promotionColumns"></tr>
+  </table>
+</mat-card>

@@ -1,0 +1,14 @@
+.panel {
+  margin-bottom: 1rem;
+}
+
+.promotion-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.8rem;
+  align-items: end;
+}
+
+table {
+  width: 100%;
+}

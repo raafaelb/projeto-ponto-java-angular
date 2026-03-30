@@ -23,6 +23,7 @@ public class EmployeeService {
     private final UserRepository userRepository;
     private final DepartmentRepository departmentRepository;
     private final TeamRepository teamRepository;
+    private final CareerLevelRepository careerLevelRepository;
     private final CurrentUserService currentUserService;
     private final PasswordEncoder passwordEncoder;
 
@@ -175,6 +176,7 @@ public class EmployeeService {
         employee.setContractType(sanitizeOptional(request.getContractType()));
         employee.setContractStartDate(request.getContractStartDate());
         employee.setContractEndDate(request.getContractEndDate());
+        employee.setCurrentSalary(request.getCurrentSalary());
         employee.setActive(request.getActive() == null ? employee.getActive() : request.getActive());
 
         if (request.getDepartmentId() != null) {
@@ -202,6 +204,14 @@ public class EmployeeService {
             employee.setManager(manager);
         } else {
             employee.setManager(null);
+        }
+
+        if (request.getCareerLevelId() != null) {
+            CareerLevel careerLevel = careerLevelRepository.findByIdAndCompanyId(request.getCareerLevelId(), companyId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Nivel de carreira nao encontrado"));
+            employee.setCareerLevel(careerLevel);
+        } else {
+            employee.setCareerLevel(null);
         }
     }
 
@@ -255,6 +265,9 @@ public class EmployeeService {
         response.setTeamName(employee.getTeam() != null ? employee.getTeam().getName() : null);
         response.setManagerEmployeeId(employee.getManager() != null ? employee.getManager().getId() : null);
         response.setManagerName(employee.getManager() != null ? employee.getManager().getName() : null);
+        response.setCareerLevelId(employee.getCareerLevel() != null ? employee.getCareerLevel().getId() : null);
+        response.setCareerLevelName(employee.getCareerLevel() != null ? employee.getCareerLevel().getName() : null);
+        response.setCurrentSalary(employee.getCurrentSalary());
 
         response.setUserId(employee.getUser() != null ? employee.getUser().getId() : null);
         response.setUsername(employee.getUser() != null ? employee.getUser().getUsername() : null);

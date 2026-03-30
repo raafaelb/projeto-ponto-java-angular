@@ -48,6 +48,18 @@ export const COMPANY_ROUTES: Routes = [
         loadComponent: () => import('./pages/reports/reports.component').then((m) => m.CompanyReportsComponent)
       },
       {
+        path: 'performance',
+        loadComponent: () => import('./pages/performance/performance.component').then((m) => m.CompanyPerformanceComponent)
+      },
+      {
+        path: 'compensation',
+        loadComponent: () => import('./pages/compensation/compensation.component').then((m) => m.CompanyCompensationComponent)
+      },
+      {
+        path: 'career',
+        loadComponent: () => import('./pages/career/career.component').then((m) => m.CompanyCareerComponent)
+      },
+      {
         path: 'users',
         loadComponent: () => import('../admin/pages/users/user-list/user-list.component').then((m) => m.UserListComponent)
       }

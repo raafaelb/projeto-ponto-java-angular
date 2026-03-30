@@ -20,7 +20,10 @@ export class EmployeeLayoutComponent {
   userInfo: UserInfo;
   menuItems: MenuItem[] = [
     { label: 'Jornada', icon: 'schedule', route: '/employee/workday' },
-    { label: 'Solicitacoes', icon: 'request_page', route: '/employee/requests' }
+    { label: 'Solicitacoes', icon: 'request_page', route: '/employee/requests' },
+    { label: 'Performance', icon: 'insights', route: '/employee/performance' },
+    { label: 'Compensacao', icon: 'payments', route: '/employee/compensation' },
+    { label: 'Carreira', icon: 'school', route: '/employee/career' }
   ];
 
   constructor(private authService: AuthService) {

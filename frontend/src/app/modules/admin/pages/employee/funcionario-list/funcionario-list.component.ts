@@ -12,8 +12,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { EmployeeService } from '../../../services/employee.service';
 import { DepartmentService } from '../../../services/department.service';
 import { TeamService } from '../../../services/team.service';
+import { CareerPhaseService } from '../../../services/career-phase.service';
 import { Employee } from '../../../../../shared/models/funcionario.model';
 import { Department, Team } from '../../../../../shared/models/hr.model';
+import { CareerLevel } from '../../../../../shared/models/phase3.model';
 
 @Component({
   selector: 'app-funcionario-list',
@@ -38,6 +40,7 @@ export class FuncionarioListComponent implements OnInit {
   employees: Employee[] = [];
   departments: Department[] = [];
   teams: Team[] = [];
+  careerLevels: CareerLevel[] = [];
   editingId: number | null = null;
   isSaving = false;
   errorMessage = '';
@@ -48,6 +51,7 @@ export class FuncionarioListComponent implements OnInit {
     private employeeService: EmployeeService,
     private departmentService: DepartmentService,
     private teamService: TeamService,
+    private careerService: CareerPhaseService,
     private snackBar: MatSnackBar
   ) {
     this.form = this.fb.group({
@@ -69,6 +73,8 @@ export class FuncionarioListComponent implements OnInit {
       departmentId: [null as number | null],
       teamId: [null as number | null],
       managerEmployeeId: [null as number | null],
+      careerLevelId: [null as number | null],
+      currentSalary: [0],
       active: [true]
     });
   }
@@ -81,6 +87,7 @@ export class FuncionarioListComponent implements OnInit {
   loadBaseData(): void {
     this.departmentService.list().subscribe((departments) => (this.departments = departments));
     this.teamService.list().subscribe((teams) => (this.teams = teams));
+    this.careerService.listCareerLevels().subscribe((levels) => (this.careerLevels = levels));
   }
 
   load(): void {
@@ -112,6 +119,8 @@ export class FuncionarioListComponent implements OnInit {
       departmentId: employee.departmentId || null,
       teamId: employee.teamId || null,
       managerEmployeeId: employee.managerEmployeeId || null,
+      careerLevelId: employee.careerLevelId || null,
+      currentSalary: employee.currentSalary || 0,
       active: employee.active ?? true
     });
   }
@@ -123,7 +132,9 @@ export class FuncionarioListComponent implements OnInit {
       password: '',
       departmentId: null,
       teamId: null,
-      managerEmployeeId: null
+      managerEmployeeId: null,
+      careerLevelId: null,
+      currentSalary: 0
     });
     this.errorMessage = '';
   }

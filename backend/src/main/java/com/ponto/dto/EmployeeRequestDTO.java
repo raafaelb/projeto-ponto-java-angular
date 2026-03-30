@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -37,6 +38,8 @@ public class EmployeeRequestDTO {
     private Long departmentId;
     private Long teamId;
     private Long managerEmployeeId;
+    private Long careerLevelId;
+    private BigDecimal currentSalary;
 
     @NotBlank(message = "Username e obrigatorio")
     private String username;

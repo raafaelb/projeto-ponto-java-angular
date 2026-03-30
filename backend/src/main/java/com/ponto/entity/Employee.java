@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "employees", uniqueConstraints = {
@@ -58,6 +59,9 @@ public class Employee {
     @Column(name = "contract_end_date")
     private LocalDate contractEndDate;
 
+    @Column(name = "current_salary", precision = 12, scale = 2)
+    private BigDecimal currentSalary;
+
     @Column(nullable = false)
     private Boolean active = true;
 
@@ -72,6 +76,10 @@ public class Employee {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "career_level_id")
+    private CareerLevel careerLevel;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_employee_id")

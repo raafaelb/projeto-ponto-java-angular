@@ -14,6 +14,18 @@ export const EMPLOYEE_ROUTES: Routes = [
       {
         path: 'requests',
         loadComponent: () => import('./pages/requests/requests.component').then((m) => m.EmployeeRequestsComponent)
+      },
+      {
+        path: 'performance',
+        loadComponent: () => import('./pages/performance/performance.component').then((m) => m.EmployeePerformanceComponent)
+      },
+      {
+        path: 'compensation',
+        loadComponent: () => import('./pages/compensation/compensation.component').then((m) => m.EmployeeCompensationComponent)
+      },
+      {
+        path: 'career',
+        loadComponent: () => import('./pages/career/career.component').then((m) => m.EmployeeCareerComponent)
       }
     ]
   }

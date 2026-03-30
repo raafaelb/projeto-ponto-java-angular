@@ -42,6 +42,9 @@ class EmployeeServiceTest {
     private TeamRepository teamRepository;
 
     @Mock
+    private CareerLevelRepository careerLevelRepository;
+
+    @Mock
     private CurrentUserService currentUserService;
 
     @Mock
