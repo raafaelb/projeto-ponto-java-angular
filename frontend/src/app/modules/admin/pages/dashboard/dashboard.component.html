@@ -1,7 +1,7 @@
 <section class="dashboard">
   <header class="dashboard-header">
-    <h2>Visao Geral</h2>
-    <p>Resumo rapido de cadastros e acessos ativos.</p>
+    <h2>Visao Geral de RH</h2>
+    <p>Indicadores operacionais da estrutura de pessoas da empresa.</p>
   </header>
 
   <div *ngIf="isLoading" class="loading-wrap">
@@ -19,6 +19,18 @@
       <mat-icon>badge</mat-icon>
       <h3>{{ employeeCount }}</h3>
       <p>Funcionarios</p>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-icon>domain</mat-icon>
+      <h3>{{ departmentCount }}</h3>
+      <p>Departamentos</p>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-icon>groups</mat-icon>
+      <h3>{{ teamCount }}</h3>
+      <p>Times</p>
     </mat-card>
 
     <mat-card class="stat-card">

@@ -16,6 +16,18 @@ export const COMPANY_ROUTES: Routes = [
         loadComponent: () => import('../admin/pages/employee/funcionario-list/funcionario-list.component').then((m) => m.FuncionarioListComponent)
       },
       {
+        path: 'departments',
+        loadComponent: () => import('../admin/pages/departments/department-list/department-list.component').then((m) => m.DepartmentListComponent)
+      },
+      {
+        path: 'teams',
+        loadComponent: () => import('../admin/pages/teams/team-list/team-list.component').then((m) => m.TeamListComponent)
+      },
+      {
+        path: 'org-chart',
+        loadComponent: () => import('../admin/pages/org-chart/org-chart.component').then((m) => m.OrgChartComponent)
+      },
+      {
         path: 'users',
         loadComponent: () => import('../admin/pages/users/user-list/user-list.component').then((m) => m.UserListComponent)
       }

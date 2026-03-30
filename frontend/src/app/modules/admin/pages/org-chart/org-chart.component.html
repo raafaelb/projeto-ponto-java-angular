@@ -1,0 +1,12 @@
+<section class="org-wrap">
+  <mat-card class="org-card" *ngFor="let group of grouped">
+    <h3>{{ group.leader }}</h3>
+    <div class="chips">
+      <div class="chip" *ngFor="let n of group.items">
+        <strong>{{ n.employeeName }}</strong>
+        <span>{{ n.position }}</span>
+        <small>{{ n.department || 'Sem departamento' }} - {{ n.team || 'Sem time' }}</small>
+      </div>
+    </div>
+  </mat-card>
+</section>

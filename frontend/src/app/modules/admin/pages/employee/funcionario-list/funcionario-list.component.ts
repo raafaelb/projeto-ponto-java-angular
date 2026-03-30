@@ -8,8 +8,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSelectModule } from '@angular/material/select';
 import { EmployeeService } from '../../../services/employee.service';
+import { DepartmentService } from '../../../services/department.service';
+import { TeamService } from '../../../services/team.service';
 import { Employee } from '../../../../../shared/models/funcionario.model';
+import { Department, Team } from '../../../../../shared/models/hr.model';
 
 @Component({
   selector: 'app-funcionario-list',
@@ -23,14 +27,17 @@ import { Employee } from '../../../../../shared/models/funcionario.model';
     MatCardModule,
     MatInputModule,
     MatSlideToggleModule,
+    MatSelectModule,
     MatSnackBarModule
   ],
   templateUrl: './funcionario-list.component.html',
   styleUrls: ['./funcionario-list.component.scss']
 })
 export class FuncionarioListComponent implements OnInit {
-  displayedColumns = ['name', 'email', 'username', 'position', 'hiringDate', 'active', 'actions'];
+  displayedColumns = ['employeeCode', 'name', 'position', 'department', 'team', 'manager', 'actions'];
   employees: Employee[] = [];
+  departments: Department[] = [];
+  teams: Team[] = [];
   editingId: number | null = null;
   isSaving = false;
   errorMessage = '';
@@ -39,21 +46,41 @@ export class FuncionarioListComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private employeeService: EmployeeService,
+    private departmentService: DepartmentService,
+    private teamService: TeamService,
     private snackBar: MatSnackBar
   ) {
     this.form = this.fb.group({
       name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
+      employeeCode: ['', [Validators.required]],
       username: ['', [Validators.required]],
       password: [''],
       position: ['', [Validators.required]],
       hiringDate: ['', [Validators.required]],
+      birthDate: [''],
+      phone: [''],
+      address: [''],
+      emergencyContactName: [''],
+      emergencyContactPhone: [''],
+      contractType: [''],
+      contractStartDate: [''],
+      contractEndDate: [''],
+      departmentId: [null as number | null],
+      teamId: [null as number | null],
+      managerEmployeeId: [null as number | null],
       active: [true]
     });
   }
 
   ngOnInit(): void {
+    this.loadBaseData();
     this.load();
+  }
+
+  loadBaseData(): void {
+    this.departmentService.list().subscribe((departments) => (this.departments = departments));
+    this.teamService.list().subscribe((teams) => (this.teams = teams));
   }
 
   load(): void {
@@ -69,17 +96,36 @@ export class FuncionarioListComponent implements OnInit {
     this.form.patchValue({
       name: employee.name,
       email: employee.email,
+      employeeCode: employee.employeeCode,
       username: employee.username,
       password: '',
       position: employee.position,
       hiringDate: employee.hiringDate,
+      birthDate: employee.birthDate || '',
+      phone: employee.phone || '',
+      address: employee.address || '',
+      emergencyContactName: employee.emergencyContactName || '',
+      emergencyContactPhone: employee.emergencyContactPhone || '',
+      contractType: employee.contractType || '',
+      contractStartDate: employee.contractStartDate || '',
+      contractEndDate: employee.contractEndDate || '',
+      departmentId: employee.departmentId || null,
+      teamId: employee.teamId || null,
+      managerEmployeeId: employee.managerEmployeeId || null,
       active: employee.active ?? true
     });
   }
 
   resetForm(): void {
     this.editingId = null;
-    this.form.reset({ active: true, password: '' });
+    this.form.reset({
+      active: true,
+      password: '',
+      departmentId: null,
+      teamId: null,
+      managerEmployeeId: null
+    });
+    this.errorMessage = '';
   }
 
   submit(): void {
@@ -93,7 +139,13 @@ export class FuncionarioListComponent implements OnInit {
       ...raw,
       username: raw.username?.trim(),
       email: raw.email?.trim(),
-      password: raw.password?.trim() || undefined
+      employeeCode: raw.employeeCode?.trim(),
+      password: raw.password?.trim() || undefined,
+      phone: raw.phone?.trim() || null,
+      address: raw.address?.trim() || null,
+      emergencyContactName: raw.emergencyContactName?.trim() || null,
+      emergencyContactPhone: raw.emergencyContactPhone?.trim() || null,
+      contractType: raw.contractType?.trim() || null
     } as Employee;
 
     if (!this.editingId && !payload.password) {
@@ -118,7 +170,7 @@ export class FuncionarioListComponent implements OnInit {
         this.load();
       },
       error: (error) => {
-        this.errorMessage = error?.error?.message || 'Nao foi possivel salvar. Verifique username/email/senha e tente novamente.';
+        this.errorMessage = error?.error?.message || 'Nao foi possivel salvar. Verifique os dados e tente novamente.';
         this.snackBar.open(this.errorMessage, 'OK', { duration: 3200 });
         this.isSaving = false;
       }

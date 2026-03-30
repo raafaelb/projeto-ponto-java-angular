@@ -21,6 +21,9 @@ export class CompanyLayoutComponent {
   menuItems: MenuItem[] = [
     { label: 'Visao Geral', icon: 'insights', route: '/company/dashboard' },
     { label: 'Funcionarios', icon: 'badge', route: '/company/employees' },
+    { label: 'Departamentos', icon: 'domain', route: '/company/departments' },
+    { label: 'Times', icon: 'groups', route: '/company/teams' },
+    { label: 'Organograma', icon: 'account_tree', route: '/company/org-chart' },
     { label: 'Usuarios', icon: 'manage_accounts', route: '/company/users' }
   ];
 

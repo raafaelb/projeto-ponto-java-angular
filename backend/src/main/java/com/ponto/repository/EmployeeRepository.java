@@ -10,6 +10,9 @@ import java.util.Optional;
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findAllByCompanyId(Long companyId);
+    List<Employee> findAllByCompanyIdOrderByNameAsc(Long companyId);
     boolean existsByEmailAndCompanyId(String email, Long companyId);
+    boolean existsByEmployeeCodeAndCompanyId(String employeeCode, Long companyId);
     Optional<Employee> findByUserId(Long userId);
+    Optional<Employee> findByIdAndCompanyId(Long id, Long companyId);
 }

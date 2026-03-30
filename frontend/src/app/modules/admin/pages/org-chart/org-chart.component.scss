@@ -1,0 +1,41 @@
+.org-wrap {
+  display: grid;
+  gap: 14px;
+}
+
+.org-card {
+  border-radius: 14px;
+  border: 1px solid #d7e2f2;
+  box-shadow: none;
+  padding: 10px;
+}
+
+h3 {
+  margin: 0 0 10px;
+  color: #17324f;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  background: #f5f8ff;
+  border: 1px solid #d7e2f2;
+  border-radius: 12px;
+  padding: 10px;
+  min-width: 220px;
+}
+
+.chip strong,
+.chip span,
+.chip small {
+  display: block;
+}
+
+.chip small {
+  color: #4a6583;
+  margin-top: 4px;
+}
