@@ -2,24 +2,17 @@ import { inject } from '@angular/core';
 import { Router, type CanActivateFn } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
-export const companyGuard: CanActivateFn = (route, state) => {
+export const companyGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  const userRole = authService.getUserRole();
-  
-  if (userRole === 'COMPANY') {
+  if (authService.getUserRole() === 'COMPANY') {
     return true;
   }
 
-  // Redireciona para área apropriada
-  if (userRole === 'ADMIN') {
-    router.navigate(['/admin/dashboard']);
-  } else if (userRole === 'EMPLOYEE') {
-    router.navigate(['/employee/ponto']);
-  } else {
-    router.navigate(['/login']);
+  if (authService.getUserRole() === 'EMPLOYEE') {
+    return router.parseUrl('/employee/workday');
   }
-  
-  return false;
+
+  return router.parseUrl('/admin/dashboard');
 };

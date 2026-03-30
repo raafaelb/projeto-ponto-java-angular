@@ -1,0 +1,98 @@
+<section class="manager-page">
+  <mat-card class="form-card">
+    <h2>{{ editingId ? 'Editar funcionario' : 'Novo funcionario' }}</h2>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Nome</mat-label>
+        <input matInput formControlName="name" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" />
+        <mat-error *ngIf="form.controls.email.touched && form.controls.email.invalid">Informe um email valido.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Username para login</mat-label>
+        <input matInput formControlName="username" />
+        <mat-error *ngIf="form.controls.username.touched && form.controls.username.invalid">Username e obrigatorio.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Senha {{ editingId ? '(deixe vazio para manter)' : '' }}</mat-label>
+        <input matInput type="password" formControlName="password" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Cargo</mat-label>
+        <input matInput formControlName="position" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Data de admissao</mat-label>
+        <input matInput type="date" formControlName="hiringDate" />
+      </mat-form-field>
+
+      <mat-slide-toggle formControlName="active">Ativo</mat-slide-toggle>
+
+      <div class="actions">
+        <button mat-button type="button" (click)="resetForm()">Limpar</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="isSaving">
+          {{ editingId ? 'Salvar alteracoes' : 'Criar funcionario' }}
+        </button>
+      </div>
+      <p class="form-error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </form>
+  </mat-card>
+
+  <mat-card class="table-card">
+    <h2>Funcionarios cadastrados</h2>
+    <table mat-table [dataSource]="employees" class="mat-elevation-z0">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Nome</th>
+        <td mat-cell *matCellDef="let e">{{ e.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let e">{{ e.email }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef>Username</th>
+        <td mat-cell *matCellDef="let e">{{ e.username }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef>Cargo</th>
+        <td mat-cell *matCellDef="let e">{{ e.position }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="hiringDate">
+        <th mat-header-cell *matHeaderCellDef>Admissao</th>
+        <td mat-cell *matCellDef="let e">{{ e.hiringDate | date: 'dd/MM/yyyy' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="active">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let e">{{ e.active ? 'Ativo' : 'Inativo' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Acoes</th>
+        <td mat-cell *matCellDef="let e">
+          <button mat-icon-button color="primary" (click)="edit(e)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="remove(e)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </mat-card>
+</section>

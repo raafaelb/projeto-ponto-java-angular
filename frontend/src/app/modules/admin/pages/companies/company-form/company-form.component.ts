@@ -4,11 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatInputModule } from '@angular/material/input';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-import { Company, CompanyService } from '../../../services/company.service';
+import { MatCardModule } from '@angular/material/card';
+import { CompanyService } from '../../../services/company.service';
 
 @Component({
   selector: 'app-company-form',
@@ -19,18 +18,15 @@ import { Company, CompanyService } from '../../../services/company.service';
     CommonModule,
     ReactiveFormsModule,
     MatInputModule,
-    MatCheckboxModule,
     MatButtonModule,
     MatFormFieldModule,
     MatSnackBarModule,
-    NgxMaskDirective
-  ],
-  providers: [provideNgxMask()]
+    MatCardModule
+  ]
 })
 export class CompanyFormComponent implements OnInit {
   companyForm: FormGroup;
   isEditMode = false;
-  loading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -43,101 +39,37 @@ export class CompanyFormComponent implements OnInit {
       id: [''],
       nomeFantasia: ['', Validators.required],
       razaoSocial: ['', Validators.required],
-      cnpj: ['', [Validators.required, Validators.pattern(/^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/)]]
+      cnpj: ['', [Validators.required]]
     });
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-      if (id) {
-        this.isEditMode = true;
-        this.loadCompany(Number(id));
-      }
-    });
-  }
-
-  private loadCompany(id: number): void {
-    this.loading = true;
-    this.companyService.buscarPorId(id).subscribe({
-      next: (company) => {
-        this.companyForm.patchValue({
-          id: company.id,
-          nomeFantasia: company.nomeFantasia,
-          razaoSocial: company.razaoSocial,
-          cnpj: company.cnpj
-        });
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Error loading company:', error);
-        this.snackBar.open('Erro ao carregar os dados da empresa', 'Fechar', {
-          duration: 3000,
-          panelClass: ['error-snackbar']
-        });
-        this.router.navigate(['/admin/companies']);
-        this.loading = false;
-      }
-    });
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    if (id) {
+      this.isEditMode = true;
+      this.companyService.getById(id).subscribe((company) => this.companyForm.patchValue(company));
+    }
   }
 
   onSubmit(): void {
-    if (this.companyForm.valid) {
-      this.loading = true;
-
-      // Clean the CNPJ by removing all non-numeric characters
-      const formValue = {
-        ...this.companyForm.value,
-        cnpj: this.companyForm.value.cnpj.replace(/\D/g, '')
-      };
-
-      console.log('Form submitted (cleaned CNPJ):', formValue);
-      
-      const request = this.isEditMode
-        ? this.companyService.atualizar(formValue.id, formValue)
-        : this.companyService.criar(formValue);
-      
-      request.subscribe({
-        next: (response) => {
-          console.log(`Company ${this.isEditMode ? 'updated' : 'created'} successfully:`, response);
-          this.loading = false;
-          this.snackBar.open(
-            `Empresa ${this.isEditMode ? 'atualizada' : 'cadastrada'} com sucesso!`,
-            'Fechar',
-            { duration: 3000 }
-          );
-          this.router.navigate(['/admin/companies']);
-        },
-        error: (error) => {
-          console.error(`Error ${this.isEditMode ? 'updating' : 'creating'} company:`, error);
-          this.loading = false;
-          this.snackBar.open(
-            `Erro ao ${this.isEditMode ? 'atualizar' : 'cadastrar'} empresa`,
-            'Fechar',
-            { duration: 3000 }
-          );
-        }
-      });
+    if (this.companyForm.invalid) {
+      return;
     }
+
+    const payload = this.companyForm.getRawValue();
+    const request = this.isEditMode
+      ? this.companyService.update(payload.id, payload)
+      : this.companyService.create(payload);
+
+    request.subscribe({
+      next: () => {
+        this.snackBar.open(this.isEditMode ? 'Empresa atualizada.' : 'Empresa criada.', 'OK', { duration: 2400 });
+        this.router.navigate(['/admin/companies']);
+      }
+    });
   }
 
-  // Add this method to handle cancel button click
   onCancel(): void {
     this.router.navigate(['/admin/companies']);
-  }
-
-  // Helper method to show form errors
-  getErrorMessage(controlName: string): string {
-    const control = this.companyForm.get(controlName);
-    
-    if (control?.hasError('required')) {
-      return 'Campo obrigatório';
-    }
-    
-    if (control?.hasError('pattern')) {
-      return 'Formato inválido';
-    }
-    
-    return '';
   }
 }

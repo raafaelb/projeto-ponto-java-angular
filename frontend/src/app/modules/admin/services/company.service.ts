@@ -1,41 +1,32 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { Company } from '../../../shared/models/company.model';
 
-export interface Company {
-  id?: number;
-  cnpj: string;
-  razaoSocial: string;
-  nomeFantasia: string;
-  dataCriacao?: string;
-  dataAtualizacao?: string;
-}
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class CompanyService {
-  private apiUrl = 'http://localhost:8080/api/companies';
+  private readonly apiUrl = `${environment.apiUrl}/api/companies`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  listarTodos(): Observable<Company[]> {
+  list(): Observable<Company[]> {
     return this.http.get<Company[]>(this.apiUrl);
   }
 
-  buscarPorId(id: number): Observable<Company> {
+  getById(id: number): Observable<Company> {
     return this.http.get<Company>(`${this.apiUrl}/${id}`);
   }
 
-  criar(company: Company): Observable<Company> {
+  create(company: Partial<Company>): Observable<Company> {
     return this.http.post<Company>(this.apiUrl, company);
   }
 
-  atualizar(id: number, company: Company): Observable<Company> {
+  update(id: number, company: Partial<Company>): Observable<Company> {
     return this.http.put<Company>(`${this.apiUrl}/${id}`, company);
   }
 
-  deletar(id: number): Observable<void> {
+  delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { BaseLayoutComponent } from '../base-layout/base-layout.component';
-import { UserInfo, MenuItem } from '../../shared/models/menu.model';
+import { MenuItem, UserInfo } from '../../shared/models/menu.model';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-company-layout',
@@ -11,42 +11,31 @@ import { UserInfo, MenuItem } from '../../shared/models/menu.model';
     <app-base-layout
       [userInfo]="userInfo"
       [menuItems]="menuItems"
-      [pageTitle]="'Minha Empresa'"
-      [headerActions]="headerActions"
-      (logout)="onLogout()"
-      (actionClicked)="onActionClick($event)">
+      pageTitle="Portal da Empresa"
+      (logout)="onLogout()">
     </app-base-layout>
   `
 })
 export class CompanyLayoutComponent {
-  userInfo: UserInfo = {
-    id: 1,
-    name: 'Empresa ABC Ltda',
-    email: 'empresa@empresa.com',
-    role: 'COMPANY',
-    companyId: 1
-  };
-
+  userInfo: UserInfo;
   menuItems: MenuItem[] = [
-    { label: 'Dashboard', icon: 'dashboard', route: '/company/dashboard', permission: ['COMPANY'] },
-    { label: 'Funcionários', icon: 'people', route: '/company/funcionarios', permission: ['COMPANY'] },
-    { label: 'Pontos', icon: 'schedule', route: '/company/pontos', permission: ['COMPANY'] },
-    { label: 'Relatórios', icon: 'assessment', route: '/company/relatorios', permission: ['COMPANY'] },
-    { label: 'Minha Conta', icon: 'business', route: '/company/conta', permission: ['COMPANY'] }
+    { label: 'Visao Geral', icon: 'insights', route: '/company/dashboard' },
+    { label: 'Funcionarios', icon: 'badge', route: '/company/employees' },
+    { label: 'Usuarios', icon: 'manage_accounts', route: '/company/users' }
   ];
 
-  headerActions: any[] = [
-    // Ações específicas da empresa
-  ];
-
-  constructor(private router: Router) {}
-
-  onLogout(): void {
-    localStorage.removeItem('auth_token');
-    this.router.navigate(['/login']);
+  constructor(private authService: AuthService) {
+    const user = this.authService.getUser();
+    this.userInfo = {
+      id: user?.id || 0,
+      name: user?.name || 'Empresa',
+      email: user?.email || 'empresa@sistema.com',
+      role: 'COMPANY',
+      companyId: user?.companyId || undefined
+    };
   }
 
-  onActionClick(action: any): void {
-    console.log('Company action:', action);
+  onLogout(): void {
+    this.authService.logout();
   }
 }

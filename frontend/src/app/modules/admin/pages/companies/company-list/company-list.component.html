@@ -1,44 +1,41 @@
-<div class="container">
-  <h2>Empresas Cadastradas</h2>
-  
-  <a routerLink="/admin/companies/new" mat-raised-button color="primary">
-    Nova Empresa
-  </a>
+<mat-card class="company-card">
+  <div class="header-row">
+    <div>
+      <h2>Empresas cadastradas</h2>
+      <p>Gestao central de clientes e dados contratuais.</p>
+    </div>
+    <a routerLink="/admin/companies/new" mat-raised-button color="primary">Nova empresa</a>
+  </div>
 
-  <table mat-table [dataSource]="companies" class="mat-elevation-z8">
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef>ID</th>
-      <td mat-cell *matCellDef="let company">{{ company.id }}</td>
-    </ng-container>
-
+  <table mat-table [dataSource]="companies" class="mat-elevation-z0">
     <ng-container matColumnDef="cnpj">
       <th mat-header-cell *matHeaderCellDef>CNPJ</th>
-      <td mat-cell *matCellDef="let company">{{ company.cnpj }}</td>
+      <td mat-cell *matCellDef="let c">{{ c.cnpj }}</td>
     </ng-container>
 
     <ng-container matColumnDef="razaoSocial">
-      <th mat-header-cell *matHeaderCellDef>Razão Social</th>
-      <td mat-cell *matCellDef="let company">{{ company.razaoSocial }}</td>
+      <th mat-header-cell *matHeaderCellDef>Razao social</th>
+      <td mat-cell *matCellDef="let c">{{ c.razaoSocial }}</td>
     </ng-container>
 
     <ng-container matColumnDef="nomeFantasia">
-      <th mat-header-cell *matHeaderCellDef>Nome Fantasia</th>
-      <td mat-cell *matCellDef="let company">{{ company.nomeFantasia }}</td>
+      <th mat-header-cell *matHeaderCellDef>Nome fantasia</th>
+      <td mat-cell *matCellDef="let c">{{ c.nomeFantasia }}</td>
     </ng-container>
 
     <ng-container matColumnDef="acoes">
-      <th mat-header-cell *matHeaderCellDef>Ações</th>
-      <td mat-cell *matCellDef="let company">
-        <button mat-icon-button color="primary" [routerLink]="['/admin/companies', company.id]">
+      <th mat-header-cell *matHeaderCellDef>Acoes</th>
+      <td mat-cell *matCellDef="let c">
+        <button mat-icon-button color="primary" [routerLink]="['/admin/companies', c.id]">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button color="warn" (click)="deleteCompany(company.id!)">
+        <button mat-icon-button color="warn" (click)="deleteCompany(c.id!)">
           <mat-icon>delete</mat-icon>
         </button>
       </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
-</div>
+</mat-card>

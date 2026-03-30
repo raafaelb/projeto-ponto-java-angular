@@ -3,7 +3,7 @@ package com.ponto.service;
 import com.ponto.entity.User;
 import com.ponto.repository.UserRepository;
 import com.ponto.security.JwtTokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,69 +14,55 @@ import java.util.Map;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class AuthService {
-    
-    @Autowired
-    private UserRepository userRepository;
-    
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-    
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
+
     public Map<String, Object> autenticar(String username, String password) {
-        System.out.println("Autenticando usuário: " + username);
-        
-        // 1. Busca usuário no banco
         User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-        
-        // 2. Verifica senha
+                .orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
+
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Senha incorreta");
         }
-        
-        System.out.println("Usuário autenticado: " + username + " - Role: " + user.getRole());
-        
-        // 3. Gera token JWT
+
+        if (!Boolean.TRUE.equals(user.getActive())) {
+            throw new RuntimeException("Usuario inativo");
+        }
+
+        Long companyId = user.getCompany() != null ? user.getCompany().getId() : null;
         String token = jwtTokenProvider.criarToken(
-            username, 
-            user.getRole().name(),
-            user.getId()
+                username,
+                user.getRole().name(),
+                user.getId(),
+                companyId
         );
-        
-        // 4. Prepara resposta com informações do usuário
+
         Map<String, Object> authResponse = new HashMap<>();
         authResponse.put("token", token);
-        
-        // 5. Informações do usuário
+
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("id", user.getId());
         userInfo.put("username", user.getUsername());
         userInfo.put("email", user.getEmail());
         userInfo.put("name", user.getName());
         userInfo.put("role", user.getRole().name());
-        
-        // 6. Se não for ADMIN, adiciona companyId
-        if (user.getRole() != User.UserRole.ADMIN && user.getCompany() != null) {
-            userInfo.put("companyId", user.getCompany().getId());
-        }
-        
-        userInfo.put("avatar", null); // Implemente upload depois
+        userInfo.put("companyId", companyId);
+        userInfo.put("active", user.getActive());
         userInfo.put("permissions", user.getPermissions());
-        
+
         authResponse.put("user", userInfo);
-        authResponse.put("expiresIn", 86400000); // 24 horas
+        authResponse.put("expiresIn", 86400000);
         authResponse.put("message", "Login realizado com sucesso");
-        
+
         return authResponse;
     }
-    
-    // Método para criar usuários de teste (opcional)
-    @Transactional
+
     public void criarUsuariosTeste() {
-        if (!userRepository.findByUsername("admin").isPresent()) {
+        if (userRepository.findByUsername("admin").isEmpty()) {
             User admin = new User();
             admin.setUsername("admin");
             admin.setPassword(passwordEncoder.encode("admin123"));
@@ -84,8 +70,8 @@ public class AuthService {
             admin.setName("Administrador Sistema");
             admin.setRole(User.UserRole.ADMIN);
             admin.setPermissions(Arrays.asList("CREATE", "READ", "UPDATE", "DELETE", "MANAGE_USERS"));
+            admin.setActive(true);
             userRepository.save(admin);
-            System.out.println("Usuário admin criado");
         }
     }
 }

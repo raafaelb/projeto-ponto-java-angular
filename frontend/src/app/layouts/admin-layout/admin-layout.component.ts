@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseLayoutComponent } from '../base-layout/base-layout.component';
-import { UserInfo, MenuItem } from '../../shared/models/menu.model';
+import { MenuItem, UserInfo } from '../../shared/models/menu.model';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-admin-layout',
@@ -11,44 +12,30 @@ import { UserInfo, MenuItem } from '../../shared/models/menu.model';
     <app-base-layout
       [userInfo]="userInfo"
       [menuItems]="menuItems"
-      [pageTitle]="'Administração'"
-      [headerActions]="headerActions"
-      (logout)="onLogout()"
-      (actionClicked)="onActionClick($event)">
+      pageTitle="Painel Administrativo"
+      (logout)="onLogout()">
     </app-base-layout>
   `
 })
 export class AdminLayoutComponent {
-  // Em produção, pegar do AuthService
-  userInfo: UserInfo = {
-    id: 1,
-    name: 'Administrador',
-    email: 'admin@sistema.com',
-    role: 'ADMIN'
-  };
-
+  userInfo: UserInfo;
   menuItems: MenuItem[] = [
-    { label: 'Dashboard', icon: 'dashboard', route: '/admin/dashboard', permission: ['ADMIN'] },
-    { label: 'Empresas', icon: 'business', route: '/admin/companies', permission: ['ADMIN'] },
-    { label: 'Usuários', icon: 'people', route: '/admin/usuarios', permission: ['ADMIN'] },
-    { label: 'Funcionários', icon: 'badge', route: '/admin/funcionarios', permission: ['ADMIN'] },
-    { label: 'Relatórios', icon: 'assessment', route: '/admin/relatorios', permission: ['ADMIN'] },
-    { label: 'Configurações', icon: 'settings', route: '/admin/configuracoes', permission: ['ADMIN'] }
+    { label: 'Visao Geral', icon: 'insights', route: '/admin/dashboard' },
+    { label: 'Empresas', icon: 'apartment', route: '/admin/companies' },
+    { label: 'Usuarios', icon: 'manage_accounts', route: '/admin/users' }
   ];
 
-  headerActions: any[] = [
-    // Ações específicas do admin no header
-  ];
-
-  constructor(private router: Router) {}
-
-  onLogout(): void {
-    // Lógica de logout
-    localStorage.removeItem('auth_token');
-    this.router.navigate(['/login']);
+  constructor(private authService: AuthService, private router: Router) {
+    const user = this.authService.getUser();
+    this.userInfo = {
+      id: user?.id || 0,
+      name: user?.name || 'Administrador',
+      email: user?.email || 'admin@sistema.com',
+      role: 'ADMIN'
+    };
   }
 
-  onActionClick(action: any): void {
-    console.log('Admin action:', action);
+  onLogout(): void {
+    this.authService.logout();
   }
 }

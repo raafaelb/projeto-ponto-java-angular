@@ -1,7 +1,8 @@
 export interface Company {
-  id: number;
+  id?: number;
   cnpj: string;
   razaoSocial: string;
   nomeFantasia: string;
-  dataCriacao: Date;
+  dataCriacao?: string;
+  dataAtualizacao?: string;
 }

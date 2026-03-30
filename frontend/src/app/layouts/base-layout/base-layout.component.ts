@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -13,9 +13,14 @@ import { UserInfo, MenuItem } from '../../shared/models/menu.model';
   selector: 'app-base-layout',
   standalone: true,
   imports: [
-    CommonModule, RouterModule,
-    MatSidenavModule, MatIconModule, MatButtonModule,
-    MatToolbarModule, MatListModule, MatMenuModule
+    CommonModule,
+    RouterModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatListModule,
+    MatMenuModule
   ],
   templateUrl: './base-layout.component.html',
   styleUrls: ['./base-layout.component.scss']
@@ -23,12 +28,10 @@ import { UserInfo, MenuItem } from '../../shared/models/menu.model';
 export class BaseLayoutComponent {
   @Input() userInfo!: UserInfo;
   @Input() menuItems: MenuItem[] = [];
-  @Input() pageTitle: string = 'Sistema de Ponto';
-  @Input() headerActions: any[] = [];
-  
+  @Input() pageTitle = 'Sistema de Ponto';
+
   @Output() logout = new EventEmitter<void>();
-  @Output() actionClicked = new EventEmitter<any>();
-  
+
   isSidebarOpen = true;
 
   toggleSidebar(): void {
@@ -37,16 +40,5 @@ export class BaseLayoutComponent {
 
   onLogout(): void {
     this.logout.emit();
-  }
-
-  onActionClick(action: any): void {
-    this.actionClicked.emit(action);
-  }
-
-  // Filtra menu items baseado na role do usuário
-  getFilteredMenuItems(): MenuItem[] {
-    return this.menuItems.filter(item => 
-      !item.permission || item.permission.includes(this.userInfo.role)
-    );
   }
 }

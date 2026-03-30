@@ -1,23 +1,63 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { CompanyService } from '../../services/company.service';
+import { EmployeeService } from '../../services/employee.service';
+import { UsuarioService } from '../../services/usuario.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,  
-  imports: [
-    CommonModule,
-    RouterModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule
-  ],
+  standalone: true,
+  imports: [CommonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent {
-  // Lógica do componente
+export class DashboardComponent implements OnInit {
+  isLoading = true;
+  companyCount = 0;
+  employeeCount = 0;
+  userCount = 0;
+
+  constructor(
+    private companyService: CompanyService,
+    private employeeService: EmployeeService,
+    private usuarioService: UsuarioService,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    const user = this.authService.getUser();
+    const companyId = user?.companyId || undefined;
+
+    this.companyService.list().subscribe({
+      next: (companies) => {
+        this.companyCount = companies.length;
+      },
+      error: () => {
+        this.companyCount = 0;
+      }
+    });
+
+    this.usuarioService.list(companyId).subscribe({
+      next: (users) => {
+        this.userCount = users.length;
+        this.employeeCount = users.filter((u) => u.role === 'EMPLOYEE').length;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      }
+    });
+
+    if (user?.role === 'COMPANY') {
+      this.employeeService.list().subscribe({
+        next: (employees) => {
+          this.employeeCount = employees.length;
+        }
+      });
+    }
+  }
 }

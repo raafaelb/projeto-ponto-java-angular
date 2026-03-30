@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { BaseLayoutComponent } from '../base-layout/base-layout.component';
-import { UserInfo, MenuItem } from '../../shared/models/menu.model';
+import { MenuItem, UserInfo } from '../../shared/models/menu.model';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-employee-layout',
@@ -11,54 +11,26 @@ import { UserInfo, MenuItem } from '../../shared/models/menu.model';
     <app-base-layout
       [userInfo]="userInfo"
       [menuItems]="menuItems"
-      [pageTitle]="'Meu Ponto'"
-      [headerActions]="headerActions"
-      (logout)="onLogout()"
-      (actionClicked)="onActionClick($event)">
+      pageTitle="Meu Ponto"
+      (logout)="onLogout()">
     </app-base-layout>
   `
 })
 export class EmployeeLayoutComponent {
-  userInfo: UserInfo = {
-    id: 1,
-    name: 'João Funcionário',
-    email: 'joao@empresa.com',
-    role: 'EMPLOYEE',
-    companyId: 1
-  };
+  userInfo: UserInfo;
+  menuItems: MenuItem[] = [{ label: 'Jornada', icon: 'schedule', route: '/employee/workday' }];
 
-  menuItems: MenuItem[] = [
-    { label: 'Meu Ponto', icon: 'schedule', route: '/employee/ponto', permission: ['EMPLOYEE'] },
-    { label: 'Meus Registros', icon: 'history', route: '/employee/registros', permission: ['EMPLOYEE'] },
-    { label: 'Meus Dados', icon: 'person', route: '/employee/dados', permission: ['EMPLOYEE'] },
-    { label: 'Solicitações', icon: 'request_page', route: '/employee/solicitacoes', permission: ['EMPLOYEE'] }
-  ];
-
-  headerActions: any[] = [
-    {
-      label: 'Bater Ponto',
-      icon: 'alarm_add',
-      type: 'REGISTER_POINT',
-      color: 'accent'
-    }
-  ];
-
-  constructor(private router: Router) {}
+  constructor(private authService: AuthService) {
+    const user = this.authService.getUser();
+    this.userInfo = {
+      id: user?.id || 0,
+      name: user?.name || 'Funcionario',
+      email: user?.email || 'funcionario@sistema.com',
+      role: 'EMPLOYEE'
+    };
+  }
 
   onLogout(): void {
-    localStorage.removeItem('auth_token');
-    this.router.navigate(['/login']);
-  }
-
-  onActionClick(action: any): void {
-    if (action.type === 'REGISTER_POINT') {
-      this.baterPonto();
-    }
-  }
-
-  baterPonto(): void {
-    console.log('Batendo ponto...');
-    // Implementar lógica de bater ponto
-    alert('Ponto registrado com sucesso!');
+    this.authService.logout();
   }
 }
